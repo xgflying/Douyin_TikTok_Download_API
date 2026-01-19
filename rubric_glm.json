@@ -1,0 +1,138 @@
+
+[
+  {
+    "rubric_id": "R01",
+    "rubric_content": "在 bilibili_web.py 中新增 GET /down_video 接口且可被路由访问",
+    "必要性": "Essential",
+    "评估维度": "功能要求（functional requirement）",
+    "验证方式": "静态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Explicit",
+    "rationale": "题目明确要求在 bilibili_web 中新增 down_video 方法且为 GET；可通过检查路由装饰器与路径是否为 /down_video 来验证。"
+  },
+  {
+    "rubric_id": "R02",
+    "rubric_content": "down_video 必须包含 bv_id、remove_watermark、resolution 三个查询参数且 remove_watermark/resolution 具备默认值 0",
+    "必要性": "Essential",
+    "评估维度": "功能要求（functional requirement）",
+    "验证方式": "静态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Explicit",
+    "rationale": "题目明确规定参数与默认值；检查函数签名与 Query(default=0) 等即可判断。"
+  },
+  {
+    "rubric_id": "R03",
+    "rubric_content": "下载文件必须保存到项目根目录 video 文件夹且命名为 {bv_id}.mp4",
+    "必要性": "Essential",
+    "评估维度": "功能要求（functional requirement）",
+    "验证方式": "静态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Explicit",
+    "rationale": "题目明确规定保存路径与命名格式；通过检查输出路径拼接逻辑与扩展名可验证。"
+  },
+  {
+    "rubric_id": "R04",
+    "rubric_content": "当 video/{bv_id}.mp4 已存在且 remove_watermark=0 时必须直接返回已存在文件路径且不重复下载",
+    "必要性": "Essential",
+    "评估维度": "鲁棒性（robustness）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Explicit",
+    "rationale": "题目要求文件存在则直接返回；可先放置同名文件后调用接口观察是否跳过下载。"
+  },
+  {
+    "rubric_id": "R05",
+    "rubric_content": "当 remove_watermark=1 时必须使用 ffmpeg 处理视频移除水印",
+    "必要性": "Essential",
+    "评估维度": "功能要求（functional requirement）",
+    "验证方式": "静态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Explicit",
+    "rationale": "题目特别说明使用 ffmpeg 处理视频且移除水印；检查代码中是否调用 ffmpeg 及相关去水印滤镜可验证。"
+  },
+  {
+    "rubric_id": "R06",
+    "rubric_content": "去水印策略需针对右上角 bilibili 文字水印进行优化",
+    "必要性": "Important",
+    "评估维度": "功能要求（functional requirement）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Explicit",
+    "rationale": "题目指出水印一般在右上角且含 bilibili 字样；调用接口后对比处理前后右上角水印是否消失可验证。"
+  },
+  {
+    "rubric_id": "R07",
+    "rubric_content": "resolution 参数需支持 0:原分辨率、1:720p、2:1080p 的分辨率切换",
+    "必要性": "Essential",
+    "评估维度": "功能要求（functional requirement）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Explicit",
+    "rationale": "题目明确规定 resolution 参数与对应分辨率；调用接口时传入不同 resolution 并观察下载视频分辨率是否变化可验证。"
+  },
+  {
+    "rubric_id": "R08",
+    "rubric_content": "接口返回格式需与现有接口保持一致（参考 ResponseModel）",
+    "必要性": "Important",
+    "评估维度": "风格（style）",
+    "验证方式": "静态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Implicit",
+    "rationale": "题目要求参考其他接口返回格式；检查返回语句是否使用 ResponseModel 且结构与其他接口一致可验证。"
+  },
+  {
+    "rubric_id": "R09",
+    "rubric_content": "关键代码需添加注释说明核心逻辑",
+    "必要性": "Important",
+    "评估维度": "风格（style）",
+    "验证方式": "静态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Explicit",
+    "rationale": "题目要求关键代码添加注释；检查新增代码块（如去水印、ffmpeg 调用）是否有注释可验证。"
+  },
+  {
+    "rubric_id": "R10",
+    "rubric_content": "需处理 ffmpeg 不可用的情况并给出明确错误提示",
+    "必要性": "Important",
+    "评估维度": "鲁棒性（robustness）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Implicit",
+    "rationale": "题目特别说明使用 ffmpeg 但未提及处理不可用情况；在无 ffmpeg 环境调用接口观察是否返回合理错误可验证。"
+  },
+  {
+    "rubric_id": "R11",
+    "rubric_content": "需支持 Bilibili 音视频分离流的合并（视频流 + 音频流）",
+    "必要性": "Essential",
+    "评估维度": "功能要求（functional requirement）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Implicit",
+    "rationale": "Bilibili 视频常见为音视频分离流；调用接口下载视频后播放观察是否有声音可验证。"
+  },
+  {
+    "rubric_id": "R12",
+    "rubric_content": "需处理用户中途断开连接的情况并清理临时文件",
+    "必要性": "Important",
+    "评估维度": "鲁棒性（robustness）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Implicit",
+    "rationale": "下载大文件时可能出现用户断开连接；中途停止请求后观察临时文件是否被清理可验证。"
+  },
+  {
+    "rubric_id": "R13",
+    "rubric_content": "需处理 bv_id 不存在或无效的情况并返回错误信息",
+    "必要性": "Important",
+    "评估维度": "鲁棒性（robustness）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Implicit",
+    "rationale": "题目未提及但接口需处理无效输入；传入不存在的 bv_id 观察是否返回合理错误可验证。"
+  },
+  {
+    "rubric_id": "R14",
+    "rubric_content": "需处理网络请求失败的情况并返回错误信息",
+    "必要性": "Important",
+    "评估维度": "鲁棒性（robustness）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Implicit",
+    "rationale": "网络请求可能失败；断开网络后调用接口观察是否返回合理错误可验证。"
+  },
+  {
+    "rubric_id": "R15",
+    "rubric_content": "需确保去水印后视频文件与原文件有明显差异（避免无变化）",
+    "必要性": "Important",
+    "评估维度": "鲁棒性（robustness）",
+    "验证方式": "动态-人工验证",
+    "显性(Explicit)隐性（Implicit）": "Implicit",
+    "rationale": "去水印后文件应与原文件不同；对比处理前后文件哈希值或观察画面差异可验证。"
+  }
+]

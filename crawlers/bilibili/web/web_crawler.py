@@ -86,14 +86,14 @@ class BilibiliWebCrawler:
         return response
 
     # 获取视频流地址
-    async def fetch_video_playurl(self, bv_id: str, cid: str, qn: str = "64") -> dict:
+    async def fetch_video_playurl(self, bv_id: str, cid: str, qn: str = "64", fnval: str = "4048") -> dict:
         # 获取请求头信息
         kwargs = await self.get_bilibili_headers()
         # 创建基础爬虫对象
         base_crawler = BaseCrawler(proxies=kwargs["proxies"], crawler_headers=kwargs["headers"])
         async with base_crawler as crawler:
             # 通过模型生成基本请求参数
-            params = PlayUrl(bvid=bv_id, cid=cid, qn=qn)
+            params = PlayUrl(bvid=bv_id, cid=cid, qn=qn, fnval=fnval)
             # 创建请求endpoint
             generator = EndpointGenerator(params.dict())
             endpoint = await generator.video_playurl_endpoint()

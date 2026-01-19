@@ -1,0 +1,147 @@
+
+[
+    {
+        "rubric_id": "R01",
+        "rubric_content": "在 bilibili_web.py 中新增 GET /down_video 接口且可被路由访问",
+        "必要性": "Essential",
+        "评估维度": "功能要求（functional requirement）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目明确要求在 bilibili_web 中新增 down_video 方法且为 GET；可通过检查路由装饰器与路径是否为 /down_video 来验证。"
+    },
+    {
+        "rubric_id": "R02",
+        "rubric_content": "down_video 必须包含 bv_id、remove_watermark、resolution 三个查询参数且 remove_watermark/resolution 具备默认值 0",
+        "必要性": "Essential",
+        "评估维度": "功能要求（functional requirement）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目明确规定参数与默认值；检查函数签名与 Query(default=0) 等即可判断。"
+    },
+    {
+        "rubric_id": "R03",
+        "rubric_content": "下载文件必须保存到项目根目录 video 文件夹且命名为 {bv_id}.mp4",
+        "必要性": "Essential",
+        "评估维度": "功能要求（functional requirement）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目明确规定保存路径与命名格式；通过检查输出路径拼接逻辑与扩展名可验证。"
+    },
+    {
+        "rubric_id": "R04",
+        "rubric_content": "当 video/{bv_id}.mp4 已存在时必须直接返回已存在文件路径且不重复下载",
+        "必要性": "Essential",
+        "评估维度": "鲁棒性（robustness）",
+        "验证方式": "动态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目要求文件存在则直接返回；可先放置同名文件后调用接口观察是否跳过下载。"
+    }, 
+    {
+        "rubric_id": "R05",
+        "rubric_content": "当 remove_watermark=1 时必须使用 ffmpeg 处理视频移除水印",
+        "必要性": "Essential",
+        "评估维度": "功能要求（functional requirement）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目特别说明使用 ffmpeg 处理视频且移除水印；检查代码中是否调用 ffmpeg 及相关去水印滤镜可验证。"
+    },
+    {
+        "rubric_id": "R06",
+        "rubric_content": "去水印流程必须依赖 ffmpeg/ffprobe 并在缺失时抛出明确错误信息",
+        "必要性": "Essential",
+        "评估维度": "鲁棒性（robustness）",
+        "验证方式": "动态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目特别说明需使用 ffmpeg；当环境缺少工具时应失败且报错可理解，便于用户修复环境。"
+    },
+    {
+        "rubric_id": "R07",
+        "rubric_content": "resolution 参数必须支持 0 原分辨率、1=720p、2=1080p 的选择逻辑",
+        "必要性": "Essential",
+        "评估维度": "功能要求（functional requirement）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目要求分辨率选项；可检查 qn 映射或选流逻辑是否覆盖三种输入。"
+    },
+    {
+        "rubric_id": "R08",
+        "rubric_content": "当 Bilibili 返回 DASH 分离流时必须下载视频流与音频流并合并为有声音的 mp4",
+        "必要性": "Essential",
+        "评估维度": "功能要求（functional requirement）",
+        "验证方式": "动态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Implicit",
+        "rationale": "题目虽未直接写“必须有声音”，但下载视频通常要求可播放且带音轨；可通过 ffprobe/播放器验证输出包含音频轨道。"
+    },
+    {
+        "rubric_id": "R09",
+        "rubric_content": "下载过程中若客户端断开连接必须清理未完成文件避免留下损坏 mp4",
+        "必要性": "Important",
+        "评估维度": "鲁棒性（robustness）",
+        "验证方式": "动态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Implicit",
+        "rationale": "这属于服务端下载端点的稳定性要求；可通过中断请求后检查本地是否残留半截文件验证。"
+    },
+    {
+        "rubric_id": "R10",
+        "rubric_content": "接口返回必须遵循项目 ResponseModel 结构并在成功时返回 code=200 与 router",
+        "必要性": "Essential",
+        "评估维度": "风格（style）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目要求参考页面其它接口返回；检查是否使用 ResponseModel(code=200, router=...) 结构即可。"
+    },
+    {
+        "rubric_id": "R11",
+        "rubric_content": "异常情况下必须在 ErrorResponseModel.message 中包含具体错误信息",
+        "必要性": "Essential",
+        "评估维度": "鲁棒性（robustness）",
+        "验证方式": "动态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "用户明确提出需要抛出错误信息；可通过触发异常场景检查返回体 message 是否为 str(e)。"
+    },
+    {
+        "rubric_id": "R12",
+        "rubric_content": "水印检测/处理逻辑必须对右上角区域有针对性（偏置或默认框）以适配 bilibili 字样水印",
+        "必要性": "Important",
+        "评估维度": "功能要求（functional requirement）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目特别说明水印一般在右上角且包含 bilibili；通过检查检测区域与兜底框是否覆盖右上角即可验证。"
+    },
+    {
+        "rubric_id": "R13",
+        "rubric_content": "去水印处理必须采用 ffmpeg 滤镜链并支持至少一种可用策略（如 delogo、模糊覆盖或贴片兜底）",
+        "必要性": "Important",
+        "评估维度": "功能要求（functional requirement）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Implicit",
+        "rationale": "题目要求移除水印但未规定算法；检查是否构造 ffmpeg filter_complex/vf 且包含去水印策略可验证实现存在。"
+    },
+    {
+        "rubric_id": "R14",
+        "rubric_content": "关键新增代码必须添加注释说明（包括 ffmpeg 探测、抽帧检测、去水印策略等）",
+        "必要性": "Essential",
+        "评估维度": "风格（style）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Explicit",
+        "rationale": "题目明确要求关键代码添加注释说明；检查新增函数/关键分支附近是否存在解释性注释即可。"
+    },
+    {
+        "rubric_id": "R15",
+        "rubric_content": "remove_watermark=1 的输出必须与处理前文件内容不同，否则应明确报错提示去水印未生效",
+        "必要性": "Important",
+        "评估维度": "鲁棒性（robustness）",
+        "验证方式": "动态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Implicit",
+        "rationale": "用户反馈“没变化”时难以定位；对输出做哈希校验可快速发现去水印未执行或未生效并给出明确错误。"
+    },
+    {
+        "rubric_id": "R16",
+        "rubric_content": "ffmpeg/ffprobe 的定位不能只依赖 PATH，应包含常见安装路径兜底以避免服务进程环境不同导致误报",
+        "必要性": "Optional",
+        "评估维度": "鲁棒性（robustness）",
+        "验证方式": "静态-人工验证",
+        "显性(Explicit)隐性（Implicit）": "Implicit",
+        "rationale": "实际运行中 uvicorn/IDE 启动可能拿不到交互式 shell 的 PATH；增加常见路径兜底能减少误报并提升可用性。"
+    }
+]
